@@ -13,12 +13,12 @@ class CaregiverSafiStigmaFormValidator(FormValidatorMixin, FormValidator):
         self.validate_other()
 
     def validate_other(self):
-        fields = ['child_other_discrimination_other',
-                  'child_other_discrimination_period']
+        fields = ['caregiver_other_discrimination_other',
+                  'caregiver_other_discrimination_period']
 
         for field in fields:
             self.required_if('ever_happened',
-                             field='child_other_discrimination',
+                             field='caregiver_other_discrimination',
                              field_required=field)
 
     def validate_period_required(self):
@@ -33,17 +33,17 @@ class CaregiverSafiStigmaFormValidator(FormValidatorMixin, FormValidator):
             'lose_social_support',
             'stressed_or_anxious',
             'depressed_or_saddened',
-            'child_isolated',
-            'child_insulted',
-            'child_home_discrimination',
-            'child_neighborhood_discrimination',
-            'child_religious_place_discrimination',
-            'child_clinic_discrimination',
-            'child_school_discrimination',
-            'child_social_effect',
-            'child_emotional_effect',
-            'child_education_effect',
-            'child_future_pespective_changed'
+            'caregiver_isolated',
+            'caregiver_insulted',
+            'caregiver_home_discrimination',
+            'caregiver_neighborhood_discrimination',
+            'caregiver_religious_place_discrimination',
+            'caregiver_clinic_discrimination',
+            'caregiver_school_discrimination',
+            'caregiver_social_effect',
+            'caregiver_emotional_effect',
+            'caregiver_education_effect',
+            'caregiver_future_pespective_changed'
         ]
 
         for field in fields:
