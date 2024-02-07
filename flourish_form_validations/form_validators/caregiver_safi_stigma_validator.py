@@ -13,37 +13,38 @@ class CaregiverSafiStigmaFormValidator(FormValidatorMixin, FormValidator):
         self.validate_other()
 
     def validate_other(self):
-        fields = ['caregiver_other_discrimination_other',
-                  'caregiver_other_discrimination_period']
+
+        fields = ['other_discr_other',
+                  'other_discr_period']
 
         for field in fields:
             self.required_if('ever_happened',
-                             field='caregiver_other_discrimination',
+                             field='other_discr',
                              field_required=field)
 
     def validate_period_required(self):
         fields = [
-            'judged_negatively',
+            'judged',
+            'avoided',
+            'discriminated',
+            'at_home',
+            'at_neigborhood',
+            'at_religious',
+            'finacial_support',
+            'social_support',
+            'stressed',
+            'saddened',
             'isolated',
             'insulted',
-            'discriminated_at_home',
-            'discriminated_at_neigborhood',
-            'discriminated_at_religious',
-            'lose_finacial_support',
-            'lose_social_support',
-            'stressed_or_anxious',
-            'depressed_or_saddened',
-            'caregiver_isolated',
-            'caregiver_insulted',
-            'caregiver_home_discrimination',
-            'caregiver_neighborhood_discrimination',
-            'caregiver_religious_place_discrimination',
-            'caregiver_clinic_discrimination',
-            'caregiver_school_discrimination',
-            'caregiver_social_effect',
-            'caregiver_emotional_effect',
-            'caregiver_education_effect',
-            'caregiver_future_pespective_changed'
+            'home_discr',
+            'neighborhood_discr',
+            'religious_place_discr',
+            'clinic_discr',
+            'school_discr',
+            'social_effect',
+            'emotional_effect',
+            'education_effect',
+            'pespective_changed'
         ]
 
         for field in fields:
