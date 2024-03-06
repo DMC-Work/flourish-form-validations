@@ -24,6 +24,17 @@ class FormValidatorMixin:
     def subject_consent_cls(self):
         return django_apps.get_model(self.subject_consent_model)
 
+    def onschedule_model(self, instance=None):
+        schedule = getattr(instance, 'schedule', None)
+        return getattr(schedule, 'onschedule_model', None)
+
+    def onschedule_model_cls(self, onschedule_model):
+        return django_apps.get_model(onschedule_model)
+
+    def visit_onschedule_model_cls(self, instance=None):
+        schedule = getattr(instance, 'schedule', None)
+        return getattr(schedule, 'onschedule_model_cls', None)
+
     def clean(self):
         if self.cleaned_data.get('maternal_visit', None):
             self.subject_identifier = self.cleaned_data.get(
@@ -119,3 +130,16 @@ class FormValidatorMixin:
             self._errors.update(message)
             raise ValidationError(message)
         return False
+
+    def get_onschedule_model_obj(self, subject_identifier, model_cls, schedule_name):
+        try:
+            model_obj = model_cls.objects.get(
+                subject_identifier=subject_identifier,
+                schedule_name=schedule_name)
+        except model_cls.DoesNotExist:
+            raise ValidationError(f'OnSchedule instance does not exist. {schedule_name}')
+        else:
+            return model_obj
+
+    def get_child_subject_identifier(self, instance):
+        return getattr(instance, 'child_subject_identifier', None)

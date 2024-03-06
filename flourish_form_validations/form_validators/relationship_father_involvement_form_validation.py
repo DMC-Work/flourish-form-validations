@@ -14,13 +14,6 @@ class RelationshipFatherInvolvementFormValidator(FormValidatorMixin, FormValidat
     maternal_delivery_model = 'flourish_caregiver.maternaldelivery'
     caregiver_child_consent_model = 'flourish_caregiver.caregiverchildconsent'
 
-    def onschedule_model(self, instance=None):
-        schedule = getattr(instance, 'schedule', None)
-        return getattr(schedule, 'onschedule_model', None)
-
-    def onschedule_model_cls(self, onschedule_model):
-        return django_apps.get_model(onschedule_model)
-
     @property
     def maternal_delivery_model_cls(self):
         return django_apps.get_model(self.maternal_delivery_model)
@@ -189,7 +182,8 @@ class RelationshipFatherInvolvementFormValidator(FormValidatorMixin, FormValidat
             child_subject_identifier = model_obj.child_subject_identifier
             if self.is_preg_enrol(child_subject_identifier):
                 return self.maternal_delivery_model_cls.objects.filter(
-                    subject_identifier=subject_identifier).exists()
+                    subject_identifier=subject_identifier,
+                    child_subject_identifier=child_subject_identifier).exists()
             return True
 
     def is_preg_enrol(self, child_subject_identifier):

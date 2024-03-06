@@ -31,6 +31,12 @@ class ObstericalHistoryFormValidator(FormValidatorMixin, FormValidator):
         super().clean()
         self.subject_identifier = self.cleaned_data.get(
             'maternal_visit').subject_identifier
+        visit_instance = self.cleaned_data.get('maternal_visit', None)
+        onschedule_model_cls = self.visit_onschedule_model_cls(visit_instance)
+        onschedule_model_obj = self.get_onschedule_model_obj(
+            self.subject_identifier, onschedule_model_cls, visit_instance.schedule_name)
+        self.child_subject_identifier = self.get_child_subject_identifier(onschedule_model_obj)
+
         self.validate_ultrasound(cleaned_data=self.cleaned_data)
         self.validate_prev_pregnancies(cleaned_data=self.cleaned_data)
         self.validate_children_delivery(cleaned_data=self.cleaned_data)
@@ -40,7 +46,8 @@ class ObstericalHistoryFormValidator(FormValidatorMixin, FormValidator):
     def anc_exists(self):
         try:
             self.antenatal_enrollment_cls.objects.get(
-                subject_identifier=self.subject_identifier)
+                subject_identifier=self.subject_identifier,
+                child_subject_identifier=self.child_subject_identifier)
         except self.antenatal_enrollment_cls.DoesNotExist:
             return False
         else:
@@ -48,7 +55,6 @@ class ObstericalHistoryFormValidator(FormValidatorMixin, FormValidator):
 
     @property
     def ultrasound_ga_confirmed(self):
-
         maternal_visit = self.cleaned_data.get('maternal_visit')
         subject_identifier = maternal_visit.subject_identifier
 
@@ -57,7 +63,8 @@ class ObstericalHistoryFormValidator(FormValidatorMixin, FormValidator):
 
         try:
             ultrasound = self.maternal_ultrasound_cls.objects.get(
-                maternal_visit__subject_identifier=subject_identifier)
+                maternal_visit__subject_identifier=subject_identifier,
+                child_subject_identifier=self.child_subject_identifier)
         except self.maternal_ultrasound_cls.DoesNotExist:
             message = 'Please complete ultrasound form first.'
             raise ValidationError(message)
@@ -70,6 +77,7 @@ class ObstericalHistoryFormValidator(FormValidatorMixin, FormValidator):
         try:
             self.maternal_delivery_cls.objects.get(
                 subject_identifier=self.subject_identifier,
+                child_subject_identifier=self.child_subject_identifier,
                 report_datetime__lte=report_datetime)
         except self.maternal_delivery_cls.DoesNotExist:
             return not self.anc_exists

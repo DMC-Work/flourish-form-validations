@@ -106,10 +106,15 @@ class ArvsPrePregnancyFormValidator(FormValidatorMixin, FormValidator):
             field_applicable='is_date_estimated')
 
     def validate_hiv_test_date_antenatal_enrollment(self):
+        visit_instance = self.cleaned_data.get('maternal_visit', None)
+        onschedule_model_cls = self.visit_onschedule_model_cls(visit_instance)
+        onschedule_model_obj = self.get_onschedule_model_obj(
+            self.subject_identifier, onschedule_model_cls, visit_instance.schedule_name)
         try:
             antenatal_enrollment = self.antenatal_enrollment_cls.objects.get(
                 subject_identifier=self.cleaned_data.get(
-                    'maternal_visit').subject_identifier)
+                    'maternal_visit').subject_identifier,
+                child_subject_identifier=self.get_child_subject_identifier(onschedule_model_obj))
         except self.antenatal_enrollment_cls.DoesNotExist:
             raise forms.ValidationError(
                 'Date of HIV test required, complete Antenatal Enrollment'

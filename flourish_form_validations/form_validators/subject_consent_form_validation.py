@@ -58,7 +58,7 @@ class SubjectConsentFormValidator(ConsentsFormValidatorMixin,
         self.validate_is_literate()
         self.validate_dob(cleaned_data=self.cleaned_data)
         self.validate_identity_number(cleaned_data=self.cleaned_data)
-        self.validate_breastfeed_intent()
+        self.validate_hiv_testing()
         self.validate_child_consent()
         self.validate_reconsent()
         self.validate_age()
@@ -184,12 +184,10 @@ class SubjectConsentFormValidator(ConsentsFormValidatorMixin,
                     self._errors.update(message)
                     raise ValidationError(message)
 
-    def validate_breastfeed_intent(self):
-        fields = ['breastfeed_intent', 'hiv_testing']
-        for field in fields:
-            self.applicable_if_true(
-                self.preg_women_screening is not None and not self.bhp_prior_screening,
-                field_applicable=field)
+    def validate_hiv_testing(self):
+        self.applicable_if_true(
+            self.preg_women_screening is not None and not self.bhp_prior_screening,
+            field_applicable='hiv_testing')
 
     def validate_identity_number(self, cleaned_data=None):
         identity = cleaned_data.get('identity')
