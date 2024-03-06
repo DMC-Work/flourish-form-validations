@@ -43,7 +43,6 @@ class CaregiverSafiStigmaFormValidator(FormValidatorMixin, FormValidator):
             'school_discr',
             'social_effect',
             'emotional_effect',
-            'education_effect',
             'pespective_changed'
         ]
 
